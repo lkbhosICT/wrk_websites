@@ -28,7 +28,7 @@ var DownloadFormCollection *mongo.Collection
 
 func ConnectMongo() {
 	
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://superuser:superuser@mongodb:27017/lkbhosdb?replicaSet=rs0&authSource=admin"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://admin:password@localhost:27017/admin?replicaSet=rs0&authSource=admin"))
 	if err != nil {
 		log.Fatal(err)
 	}
