@@ -7,8 +7,25 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { year } = await params;
-  
-    const baseUrl = `${process.env.URL_API_LINK}/files/lkbhos-ita.jpg` ;
+
+    const baseUrl = `${process.env.URL_API_NEXT}geturl/lkbhos-ita.jpg` ;
+    const apiKey = process.env.API_FIRST_KEY ?? "";
+
+    const urlImg = await fetch(`${baseUrl}`, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+      },
+    })
+
+    if (!urlImg.ok) throw new Error("Failed to fetch data");
+
+    const dataImg = await urlImg.json()
+
+    const urlRaw = dataImg?.url ?? "ไม่มีข้อมูล"
+    
 
     if (!year || isNaN(Number(year))) {
         return {
@@ -32,16 +49,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   
     return {
-      title: `MITAS ปีงบประมาณ ${year} | โรงพยาบาลลานกระบือ`,
-      description: `MITAS (MOPH Integrity and Transparency Assessment System) ปีงบประมาณ ${year}`,
+      title: `MOIT ปีงบประมาณ ${year} | โรงพยาบาลลานกระบือ`,
+      description: `MOIT (MOPH Integrity and Transparency Assessment System) ปีงบประมาณ ${year}`,
       openGraph: {
-        title: `MITAS ปีงบประมาณ ${year} | โรงพยาบาลลานกระบือ`,
-        description: `MITAS (MOPH Integrity and Transparency Assessment System) ปีงบประมาณ ${year}`,
+        title: `MOIT ปีงบประมาณ ${year} | โรงพยาบาลลานกระบือ`,
+        description: `MOIT (MOPH Integrity and Transparency Assessment System) ปีงบประมาณ ${year}`,
         type: "website",
         url: `https://lkbhos.moph.go.th`,
         images: [
           {
-            url: baseUrl,
+            url: urlRaw,
             width: 1200,
             height: 630,
             alt: `ภาพประกอบข้อมูล ita ปี ${year}`,
@@ -69,22 +86,46 @@ const MoitYear = async({ params }: PageProps) => {
     }
 
     const apiUrl = `${urlApi}moit/${year}`;
+    const urlImg1 = `${urlApi}geturl/bg_head_topic.jpg`;
+    const urlImg2 = `${urlApi}geturl/moitlogo.png`;
     try {
-        const response = await fetch(apiUrl, {
+        const [response, url1, url2]  = await Promise.all([
+          fetch(`${apiUrl}`, {
             method: "GET",
             cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${apiKey}`,
             },
-        });
+          }),
+          fetch(`${urlImg1}`, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`,
+            },
+          }),
+          fetch(`${urlImg2}`, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`,
+            },
+          }),
+        ]);
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data, Status: ${response.status}`);
+        if (!response.ok || !url1.ok || !url2.ok) {
+            throw new Error(`Failed to fetch data, Status: ${response.status} || ${url1.status} || ${url2.status}`);
         }
-        const data = await response.json();
+        const [data, urlData1, urlData2 ] = await Promise.all([
+          response.json(),
+          url1.json(),
+          url2.json(),
+        ])
 
-        return <Moityear moityearData = {data}/>
+        return <Moityear moityearData = {data} url1= {urlData1} url2= {urlData2}/>
     } catch (err) {
         return <div>Failed to load data for year {year}.</div>;
     }

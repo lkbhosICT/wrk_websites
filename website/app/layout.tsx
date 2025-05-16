@@ -3,7 +3,7 @@ import NavbarMenu from "@/components/NavbarMenu";
 import 'remixicon/fonts/remixicon.css';
 import './globals.css'
 import { Sarabun } from 'next/font/google'
-import Footpage from "@/components/Footpage";
+import FootpageData from "@/components/FootpageData";
 import Backgroup from "@/components/Backgroup";
 const sarabun = Sarabun( {
   weight: ['200','400','500','600'],
@@ -28,7 +28,7 @@ const layout = ({ children }: Props) => {
         <div className='w-full relative max-lg:px-1 mx-auto lg:mt-[4.2rem] max-lg:mt-[3.2rem] break-words'>
           {children}
         </div>
-        <Footpage/>
+        <FootpageData/>
       </body>
     </html>
   )

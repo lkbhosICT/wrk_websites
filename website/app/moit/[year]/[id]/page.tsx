@@ -27,9 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     };
   }
-  const baseUrl = `${process.env.URL_API_LINK}/files/lkbhos-ita.jpg` ;
+  const baseUrl = `${process.env.URL_API_NEXT}geturl/lkbhos-ita.jpg` ;
   const apiKey = process.env.API_FIRST_KEY ?? "";
   const urlApi = process.env.URL_API_NEXT ?? "";
+  const urlfull = process.env.URL_FULL_LINK ?? "";
 
   if (!apiKey || !urlApi) {
     return {
@@ -40,34 +41,53 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const apiUrl = `${urlApi}moit/${year}/${id}`;
   try {
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
+    const [response01, url01 ] = await Promise.all([
+      fetch(apiUrl, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }),
+      fetch(`${baseUrl}`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+        },
+      }),
+    ])
 
-    if (!response.ok) throw new Error("Failed to fetch data");
+    if (!response01.ok || !url01.ok) throw new Error("Failed to fetch data");
 
-    const data = await response.json();
+    const [data, dataurl] = await Promise.all([
+        response01.json(),
+        url01.json()
+    ])
+   
     
     const firstItem = Array.isArray(data) && data.length > 0 ? data[0] : null;
-
-    const numsValue = firstItem?.nums ?? "ไม่มีข้อมูล";  
+    const urlRaw = dataurl?.url ?? "ไม่มีข้อมูล"
+    const numsValue = firstItem?.doc_nums ?? "ไม่มีข้อมูล";  
 
     let title = null;
     let numsFromTitle = null;
     
-    if (firstItem?.childrens?.title) {
-        title = firstItem.childrens.title;
-        numsFromTitle = firstItem.childrens.nums;
-    } else if (firstItem?.childrens?.subtitle?.title) {
-        title = firstItem.childrens.subtitle.title;
-        numsFromTitle = firstItem.childrens.subtitle.nums;
+    if ("children_title" in firstItem) {
+      title = firstItem.children_title;
+    } else if ("subtitle_title" in firstItem) {
+      title = firstItem.subtitle_title;
     }
      
+    
+  if("subtitle_nums" in firstItem){
+    numsFromTitle = firstItem.subtitle_nums
+  } else if ("children_nums" in firstItem){
+    numsFromTitle = firstItem.children_nums
+  }
+  
 
     const maxLength30 = 30;  
     const maxLength140 = 140; 
@@ -81,10 +101,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       openGraph: {
         title: `(MOIT${numsValue})ข้อ${numsFromTitle}${cutTitle30}`,
         description: `โรงพยาบาลลานกระบือ MITAS ปีงบประมาณ${year} (MOIT${numsValue}) ข้อ${numsFromTitle} ${cutTitle140}`,
-        url: `http://10.10.5.1/moit/${year}/${id}`,
+        url: `${urlfull}moit/${year}/${id}`,
         images: [
           {
-            url: baseUrl,
+            url: urlRaw,
             alt: `ภาพประกอบข้อมูลปี ${year}`,
           },
         ],
@@ -125,6 +145,7 @@ const MoitId = async ({ params }: PageProps) => {
 
   const apiKey = process.env.API_FIRST_KEY ?? "";
   const urlApi = process.env.URL_API_NEXT ?? "";
+  
 
   if (!apiKey || !urlApi) {
       console.error("Missing API key or URL in environment variables.");
@@ -132,24 +153,61 @@ const MoitId = async ({ params }: PageProps) => {
   }
 
   const apiUrl = `${urlApi}moit/${year}/${id}`;
+  const urlImg1 = `${urlApi}geturl/bg_head.jpg`;
+  const getview = `${urlApi}view-count/moit/${id}`;
+  const getdownload = `${urlApi}download-count/moit/${id}`;
   try {
-    const response = await fetch(apiUrl, {
+    const [response, imgurl1, rawview, rawdownload] = await Promise.all([
+      fetch(apiUrl, {
         method: "GET",
         cache: "no-store",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`,
         },
-    });
+      }),
+      fetch(`${urlImg1}`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+        },
+      }),
+      fetch(`${getview}`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+        },
+      }),
+      fetch(`${getdownload}`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+        },
+      }),
+    ])
+    
 
-    if (!response.ok) {
+    if (!response.ok || !imgurl1.ok || !rawview.ok || !rawdownload.ok) {
         throw new Error(`Failed to fetch data, Status: ${response.status}`);
     }
-    const data = await response.json();
-   return <MoitIdComponent moitIdData = {data}/>
-} catch (err) {
-    return <div>Failed to load data for year {year}.</div>;
-}
+    const [data , urlData1, dataview, datadownload]= await Promise.all([
+      response.json(),
+      imgurl1.json(),
+      rawview.json(),
+      rawdownload.json()
+    ]) 
+
+   return <MoitIdComponent items = {data} imgurl = {urlData1} viewdata={dataview} downloaddata={datadownload}/>
+
+  } catch (err) {
+      return <div>Failed to load data for MOIT.</div>;
+  }
 };
 
  

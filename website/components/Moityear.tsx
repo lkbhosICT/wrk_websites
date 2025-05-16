@@ -33,12 +33,20 @@ interface moit{
     childrens: childrens[]
 }
 
-interface moitProps{
-    moityearData: moit[]
-    
+interface url1{
+    url: string
+}
+interface url2{
+    url: string
 }
 
-const Moityear: React.FC<moitProps> = ({ moityearData }) => {
+interface moitProps{
+    moityearData: moit[]
+    url1: url1
+    url2: url2
+}
+
+const Moityear: React.FC<moitProps> = ({ moityearData , url1 , url2 }) => {
     
     if (!moityearData) {
         return <div>Failed to load Moit data.</div>;
@@ -48,7 +56,7 @@ const Moityear: React.FC<moitProps> = ({ moityearData }) => {
   
     
   const [breadcrumbLabels, setBreadcrumbLabels] = useState<Record<string, string>>({
-    moit: "MITAS", 
+    moit: "MOIT", 
   });
 
   useEffect(() => {
@@ -105,18 +113,19 @@ const Moityear: React.FC<moitProps> = ({ moityearData }) => {
     return (
       <div className="lg:container mx-auto p-2 overflow-hidden mb-10">
          <Breadcrumbs pathname={pathname} breadcrumbLabels={breadcrumbLabels} />
-          <div className="lg:w-[95%] mx-auto max-h-[50vh]  bg-[url(http://10.10.5.1:8081/api/files/bg_head_topic.jpg)] bg-cover bg-center box-shadows-5 mb-6">
+          <div className="lg:w-[95%] mx-auto max-h-[50vh]  bg-cover bg-center box-shadows-5 mb-6" style={{ backgroundImage: `url('${url1.url}')` }}>
               <div className="flex justify-center items-center p-[1.5rem] w-[80%]  mx-auto">
                   <div className="w-full h-full flex justify-center items-center">
                     <div className="relative flex items-center gap-4">
                       <div className="relative right-[-20px] max-lg:right-[-10px]">
-                        <Image className="lg:w-[16.5vh] 2xl:w-[15vh] max-lg:hidden" src="http://10.10.5.1:8081/api/files/moitlogo.png" width={100} height={100} unoptimized alt="logomoit"/>
+                        <Image className="lg:w-[16.5vh] 2xl:w-[15vh] max-lg:hidden" src={`${url2.url}`} width={100} height={100} unoptimized alt="logomoit"/>
                       </div>
                     </div>
                     <div className="lg:flex lg:flex-col lg:justify-center text-center lg:relative">
                       <div className="lg:border-t-[5px] lg:border-b-[5px] lg:border-moit lg:mt-[24px] lg:py-[4px] lg:ps-[16px] lg:w-max">
-                        <div className="font-extrabold head-topic text-shadow">MITAS (MOPH Integrity and Transparency Assessment System)</div>
+                        <div className="font-extrabold head-topic text-shadow">MOIT (MOPH Integrity and Transparency Assessment System)</div>
                         <div className="lg:text-right font-semibold head-topic-sm text-shadow">ปีงบประมาณ {fcYear}</div>
+                        
                         <hr className="lg:hidden mt-2 mx-auto w-[80%]  block border-none h-[3px] bg-gradient-to-r from-white via-moit  to-white"/>
                       </div>
                     </div>

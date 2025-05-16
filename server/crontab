@@ -1,1 +1,0 @@
-* * * * * node /app/cron-job.js >> /app/cron.log 2>&1

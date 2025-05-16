@@ -2,43 +2,44 @@ version: '3.8'
 
 services:
   mongodb:
-    image: mongo
-    container_name: mongodb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongodb_replica
+    restart: always
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: lkbhos
-      MONGO_INITDB_ROOT_PASSWORD: lkbh11234
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./mongo_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    restart: always
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb-keyfile:/mongodb-keyfile
+    command: ["--replSet", "rs0", "--bind_ip_all", "--keyFile", "/mongodb-keyfile/mongodb-keyfile", "--auth"]
     networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 15s
-      retries: 10
+      - app_network
 
-  api:
-    build: ./server/
-    container_name: api
+  go_api:
+    build:
+      context: ./Go_api
+      dockerfile: Dockerfile
+    container_name: go_api
+    restart: always
     ports:
       - "8081:8081"
     environment:
-      MONGO_URI: mongodb://lkbhos:lkbh11234@mongodb:27017/lkbhosdb
-    volumes:
-      - ./server/files:/app/files:rw
-    restart: always
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/admin?replicaSet=rs0&authSource=admin
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb
     networks:
-      - app-network  
-networks:
-  app-network:
-    driver: bridge
+      - app_network
+
 
 volumes:
-  mongo_data:
+  mongodb_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

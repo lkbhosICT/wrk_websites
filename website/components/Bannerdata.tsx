@@ -17,7 +17,7 @@ const Bannerdata = async () => {
         }
         
         const bannerData = await bannerRes.json()
-         return <Banner bannerData={bannerData}/>
+         return <Banner bannerData={bannerData[0]}/>
 
      }catch(err){
         console.error("Error fetching data:", err);

@@ -61,7 +61,7 @@ const Banner: React.FC<bannerProps> = ({bannerData}) => {
                     custom={0}
                     className="text-[clamp(0.875rem, 0.8rem + 0.375vw, 1.25rem)] tracking-[4px] lg:mb-5 mb-1 max-lg:px-1"
                   >
-                    {bannerData.wellcome}
+                    {bannerData?.wellcome}
                   </motion.h1>
               <div className='lg:max-w-max w-full max-h-max p-1 '>
                   <motion.h1
@@ -135,7 +135,7 @@ const Banner: React.FC<bannerProps> = ({bannerData}) => {
                 >    
                     {bannerData.imgbanner.map((img , index) =>(
                           <SwiperSlide key={index} className="relative z-10 border-[1px] rounded-[20px] select-none w-full h-full overflow-visible pointer-events-auto ">
-                          <Image className="w-full h-[450px] object-cover shadow-lg" src={process.env.NEXT_PUBLIC_API_URL+img.path} width={100} height={100} unoptimized alt={`Slide ${index}`} />
+                          <Image className="w-full h-[450px] object-cover shadow-lg" src={img.path} width={100} height={100} unoptimized alt={`Slide ${index}`} />
                           <Dialog>
                               <DialogTrigger className="absolute z-50 text-left ps-5 bottom-0 w-full h-[90px] bg-[rgba(93,95,145,0.4)] backdrop-blur-[10px] text-white  text-lg font-bold cursor-pointer">
                                 {img.name}
@@ -144,7 +144,7 @@ const Banner: React.FC<bannerProps> = ({bannerData}) => {
                                 <DialogHeader className="hidden">
                                   <DialogTitle>My Modal</DialogTitle>
                                 </DialogHeader>
-                                <img src={process.env.NEXT_PUBLIC_API_URL+img.path} alt="Selected" />
+                                <img src={img.path} alt="Selected" />
                               </DialogContent>
                         </Dialog>
                         </SwiperSlide>
