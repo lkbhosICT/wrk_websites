@@ -1,6 +1,6 @@
 #!/bin/bash
 # init-replica.sh
-
+# แก้จาก localhost เป็นชื่อ services
 echo "Waiting for MongoDB to start..."
 sleep 10
 
@@ -11,7 +11,7 @@ docker exec mongodb_replica mongosh -u admin -p password --authenticationDatabas
     members: [
       {
         _id: 0,
-        host: "mongodb:27017",
+        host: "mongodb:27017", 
         priority: 1
       }
     ]
