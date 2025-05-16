@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,7 +29,13 @@ var DownloadFormCollection *mongo.Collection
 
 func ConnectMongo() {
 	
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://admin:password@localhost:27017/admin?replicaSet=rs0&authSource=admin"))
+	mongoURI := os.Getenv("MONGODB_URI")
+	if mongoURI == "" {
+		log.Fatal("MONGODB_URI ไม่ถูกตั้งค่าใน environment")
+	}
+
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		log.Fatal(err)
 	}
