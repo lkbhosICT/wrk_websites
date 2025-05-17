@@ -30,11 +30,27 @@ services:
       - "8081:8081"
     environment:
       - MONGODB_URI=mongodb://admin:password@mongodb:27017/admin?replicaSet=rs0&authSource=admin
+    volumes:
+    - ./files:/app/files
+    - ./convert:/app/convert
     depends_on:
       - mongodb
     networks:
       - app_network
 
+  nextjs:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    container_name: nextjs
+    restart: always
+    expose:
+      - "3000"
+    depends_on:
+      - go_api
+    networks:
+      - app_network
+    
 
 volumes:
   mongodb_data:

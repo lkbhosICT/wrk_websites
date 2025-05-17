@@ -45,6 +45,13 @@ docker compose up -d go_api
 sleep 5
 docker logs go_api | tail -10
 
+# 8. สร้างและเริ่ม Next.js container
+echo -e "\n[8/8] Building and starting Next.js container..."
+docker compose build nextjs
+docker compose up -d nextjs
+sleep 5
+docker logs website | tail -10
+
 echo -e "\n========================================" 
 echo "MongoDB Replica Set & Go API setup completed!" 
 echo "========================================" 
@@ -53,4 +60,5 @@ echo "To verify the replica set status:"
 echo "docker exec mongodb_replica mongosh -u admin -p password --authenticationDatabase admin --eval 'rs.status()'"
 echo ""
 echo "Go API is available at: http://localhost:8081"
+echo "Next.js:     http://localhost:3000"
 echo "========================================"
