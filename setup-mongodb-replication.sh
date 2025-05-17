@@ -8,38 +8,38 @@ echo "MongoDB Replica Set Setup Script"
 echo "========================================"
 
 # 1. สร้าง keyFile
-echo -e "\n[1/7] Creating keyFile..."
+echo -e "\n[1/8] Creating keyFile..."
 chmod +x create-keyfile.sh
 ./create-keyfile.sh
 
 # 2. ตั้งค่า permissions ที่ถูกต้อง
-echo -e "\n[2/7] Setting correct permissions..."
+echo -e "\n[2/8] Setting correct permissions..."
 chmod 600 mongodb-keyfile/mongodb-keyfile
 ls -la mongodb-keyfile/mongodb-keyfile
 
 # 3. สร้างและเริ่มต้น container
-echo -e "\n[3/7] Building and starting MongoDB container..."
+echo -e "\n[3/8] Building and starting MongoDB container..."
 docker compose down -v 2>/dev/null
 docker compose build mongodb
 docker compose up -d mongodb
 
 # 4. รอให้ container เริ่มทำงาน
-echo -e "\n[4/7] Waiting for MongoDB to start..."
+echo -e "\n[4/8] Waiting for MongoDB to start..."
 sleep 10
 docker logs mongodb_replica | tail -10
 
 # 5. แก้ไขสิทธิ์ของ keyFile (ถ้าจำเป็น)
-echo -e "\n[5/7] Fixing permissions for keyFile..."
+echo -e "\n[5/8] Fixing permissions for keyFile..."
 chmod +x fix-permissions.sh
 ./fix-permissions.sh
 
 # 6. ตั้งค่า replica set
-echo -e "\n[6/7] Initializing replica set..."
+echo -e "\n[6/8] Initializing replica set..."
 chmod +x init-replica.sh
 ./init-replica.sh
 
 # 7. สร้างและเริ่มต้น Go API container
-echo -e "\n[7/7] Building and starting Go API container..."
+echo -e "\n[7/8] Building and starting Go API container..."
 docker compose build go_api
 docker compose up -d go_api
 sleep 5
