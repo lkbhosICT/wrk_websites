@@ -1,0 +1,63 @@
+MongoDB Replica Set with Authentication
+ชุดไฟล์นี้ใช้สำหรับตั้งค่า MongoDB Replica Set แบบ 1 node บน Docker Compose พร้อมการตั้งค่าความปลอดภัยด้วย keyFile
+ไฟล์ทั้งหมด
+
+docker-compose.yml - ไฟล์ Docker Compose หลักที่กำหนดการตั้งค่า MongoDB
+mongo-init.js - สคริปต์ที่จะรันตอน MongoDB เริ่มต้น
+create-keyfile.sh - สคริปต์สำหรับสร้าง keyFile เพื่อใช้ยืนยันตัวตนระหว่าง replica set
+init-replica.sh - สคริปต์สำหรับตั้งค่า replica set หลังจาก container เริ่มทำงาน
+
+ขั้นตอนการใช้งาน
+1. สร้าง keyFile สำหรับ MongoDB
+bash# ให้สิทธิ์การเรียกใช้กับสคริปต์
+chmod +x create-keyfile.sh
+
+# รันสคริปต์เพื่อสร้าง keyFile
+./create-keyfile.sh
+สคริปต์จะสร้างไฟล์ mongodb-keyfile/mongodb-keyfile ที่มีค่าสุ่มและตั้งค่าสิทธิ์ที่เหมาะสม
+2. เริ่มต้น MongoDB Container
+bash# สร้างและเริ่มต้น container
+docker-compose up -d
+3. ตั้งค่า Replica Set
+รอสักครู่ให้ MongoDB container เริ่มทำงานเรียบร้อยก่อน จากนั้นทำการตั้งค่า replica set:
+bash# ให้สิทธิ์การเรียกใช้กับสคริปต์
+chmod +x init-replica.sh
+
+
+# ทำให้ไฟล์ script ทั้งหมดสามารถทำงานได้
+chmod +x setup-mongodb-replication.sh create-keyfile.sh fix-permissions.sh init-replica.sh
+./setup-mongodb-replication.sh
+
+# รันสคริปต์เพื่อตั้งค่า replica set
+./init-replica.sh
+4. ตรวจสอบสถานะ Replica Set
+bash# ตรวจสอบสถานะ replica set
+docker exec mongodb_replica mongosh -u admin -p password --authenticationDatabase admin --eval 'rs.status()'
+การเชื่อมต่อกับ MongoDB
+bash# เชื่อมต่อกับ MongoDB shell
+docker exec -it mongodb_replica mongosh -u admin -p password --authenticationDatabase admin
+หรือเชื่อมต่อจาก application ของคุณโดยใช้ connection string:
+mongodb://admin:password@localhost:27017/admin?replicaSet=rs0&authSource=admin
+สรุปการตั้งค่า
+
+Replica Set Name: rs0
+Authentication: เปิดใช้งาน
+Admin User: admin
+Admin Password: password
+Port: 27017
+
+การแก้ไขปัญหา
+หากเกิดปัญหา คุณสามารถตรวจสอบ log ได้ด้วยคำสั่ง:
+bash# ดู log ของ container
+docker logs mongodb_replica
+หรือรีสตาร์ท container:
+bash# รีสตาร์ท container
+docker-compose restart
+หากต้องการเริ่มต้นใหม่ทั้งหมด:
+bash# ลบ container และ volume
+docker-compose down -v
+
+# สร้างใหม่
+./create-keyfile.sh
+docker-compose up -d
+./init-replica.sh
