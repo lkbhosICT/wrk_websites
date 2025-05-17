@@ -19,9 +19,9 @@ ls -la mongodb-keyfile/mongodb-keyfile
 
 # 3. สร้างและเริ่มต้น container
 echo -e "\n[3/7] Building and starting MongoDB container..."
-docker-compose down -v 2>/dev/null
-docker-compose build mongodb
-docker-compose up -d mongodb
+docker compose down -v 2>/dev/null
+docker compose build mongodb
+docker compose up -d mongodb
 
 # 4. รอให้ container เริ่มทำงาน
 echo -e "\n[4/7] Waiting for MongoDB to start..."
@@ -40,8 +40,8 @@ chmod +x init-replica.sh
 
 # 7. สร้างและเริ่มต้น Go API container
 echo -e "\n[7/7] Building and starting Go API container..."
-docker-compose build go_api
-docker-compose up -d go_api
+docker compose build go_api
+docker compose up -d go_api
 sleep 5
 docker logs go_api | tail -10
 
