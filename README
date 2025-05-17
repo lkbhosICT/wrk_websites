@@ -24,6 +24,12 @@ bash# ให้สิทธิ์การเรียกใช้กับส�
 chmod +x init-replica.sh
 
 
+#วิธีการลบ docker container 
+docker-compose down -v
+docker system prune -a --volumes -f
+
+
+
 # ทำให้ไฟล์ script ทั้งหมดสามารถทำงานได้
 chmod +x setup-mongodb-replication.sh create-keyfile.sh fix-permissions.sh init-replica.sh
 ./setup-mongodb-replication.sh
