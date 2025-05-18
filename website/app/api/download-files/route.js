@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-export async function POST(request, context) {
+export async function POST(request) {
     const body = await request.json();
     const { source, id } = body
     const secretKey = process.env.NEXT_PUBLIC_API_KEY || ""

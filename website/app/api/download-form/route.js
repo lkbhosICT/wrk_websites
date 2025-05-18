@@ -1,4 +1,4 @@
-export async function GET(request, { params }) {
+export async function GET() {
 
     const apiKey = process.env.API_SECRET_KEY; 
     const api_secon_Key = process.env.API_SECON_KEY; 
@@ -42,7 +42,7 @@ export async function GET(request, { params }) {
         const data = await response.json();
         return Response.json(data);
       }catch(err){
-          console.error("Error fetching menu:", error);
+          console.error("Error fetching menu:", err);
           return new Response(JSON.stringify({ error: "Failed to fetch menu data" }), { status: 500 });
       }
 
