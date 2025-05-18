@@ -76,7 +76,7 @@ const Footpage: React.FC<ImgProps> = ({url1, url2, url3, url4}) => {
                 <div className="lg:border-r-2 lg:text-center text-center p-[0.5rem] text-footer">
                     <div className="lg:w-[40px] w-[30px] mx-auto">
                     <Image
-                        src={url2.url}
+                        src={url4.url}
                         alt="Lankrabue-MAP"
                         width={40}
                         height={40}

@@ -5,111 +5,100 @@ import { useState, useEffect } from "react";
 import { usePathname , notFound } from "next/navigation";
 import Breadcrumbs from "./Breadcrumbs";
 
-interface submenu{
-    _id: string;
-    nums: number;
-    title: string;
-    path: string;
-    pdfurl:string;
-    make_by:string;
-    fc_year:string;
+interface submenu {
+  _id: string;
+  nums: number;
+  title: string;
+  path: string;
+  pdfurl: string;
+  make_by: string;
+  fc_year: string;
 }
 
-interface childrens{
-    _id: string;
-    nums: number;
-    title: string;
-    path: string;
-    pdfurl:string;
-    make_by:string;
-    fc_year:string;
-    subtitle: submenu[]
+interface childrens {
+  _id: string;
+  nums: number;
+  title: string;
+  path: string;
+  pdfurl: string;
+  make_by: string;
+  fc_year: string;
+  subtitle: submenu[];
 }
 
-interface moit{
-    nums: number;
-    title:string;
-    fc_year:string;
-    childrens: childrens[]
+interface moit {
+  nums: number;
+  title: string;
+  fc_year: string;
+  childrens: childrens[];
 }
 
-interface url1{
-    url: string
+interface url1 {
+  url: string
 }
-interface url2{
-    url: string
+interface url2 {
+  url: string
 }
 
-interface moitProps{
-    moityearData: moit[]
-    url1: url1
-    url2: url2
+interface moitProps {
+  moityearData: moit[]
+  url1: url1
+  url2: url2
 }
 
 const Moityear: React.FC<moitProps> = ({ moityearData , url1 , url2 }) => {
-    
-    if (!moityearData) {
-        return <div>Failed to load Moit data.</div>;
-    }
-    const pathname = usePathname() || "/"; 
-    const pathSegments = pathname.split("/").filter(Boolean); 
-  
-    
-  const [breadcrumbLabels, setBreadcrumbLabels] = useState<Record<string, string>>({
-    moit: "MOIT", 
-  });
+
+  const pathname = usePathname() || "/";
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const [breadcrumbLabels, setBreadcrumbLabels] = useState<Record<string, string>>({ moit: "MOIT" });
+  const [clicked, setClicked] = useState<number | null>(null);
+  const [clicksubmenu, setClickSubmenu] = useState<number | null>(null);
 
   useEffect(() => {
-    // ตรวจสอบ moityearData และ pathSegments ก่อน
-    if (!moityearData || !Array.isArray(moityearData) || moityearData.length === 0) return;
-    if (!pathSegments || !Array.isArray(pathSegments) || pathSegments.length === 0) return;
-  
+    if (!moityearData || moityearData.length === 0 || !pathSegments || pathSegments.length === 0) return;
+
     const newLabels: Record<string, string> = { ...breadcrumbLabels };
-  
+
     pathSegments.forEach((segment, index) => {
-      // ตรวจสอบ segment และ index ให้แน่ใจว่าใช้งานได้
       if (!segment || typeof segment !== "string") return;
-      if (typeof index !== "number" || index < 1) return;
-  
+
       if (index === 1) {
         const yearData = moityearData.find((item) => item?.fc_year?.toString() === segment);
-        if (yearData) {
-          newLabels[segment] = `ปีงบ ${yearData.fc_year}`;
-        }
+        if (yearData) newLabels[segment] = `ปีงบ ${yearData.fc_year}`;
       }
-  
+
       if (index === 2) {
         const parentData = moityearData
-          .flatMap((item) => item?.childrens || []) // ป้องกัน childrens เป็น undefined
+          .flatMap((item) => item?.childrens || [])
           .find((child) => child?._id === segment);
-        if (parentData) {
-          newLabels[segment] = parentData.title;
-        }
+        if (parentData) newLabels[segment] = parentData.title;
       }
-  
+
       if (index === 3) {
         const childData = moityearData
-          .flatMap((item) => item?.childrens || []) // ป้องกัน childrens เป็น undefined
-          .flatMap((child) => child?.subtitle || []) // ป้องกัน subtitle เป็น undefined
+          .flatMap((item) => item?.childrens || [])
+          .flatMap((child) => child?.subtitle || [])
           .find((sub) => sub?._id === segment);
-        if (childData) {
-          newLabels[segment] = childData.title;
-        }
+        if (childData) newLabels[segment] = childData.title;
       }
     });
-  
+
     setBreadcrumbLabels(newLabels);
-  }, [pathname, moityearData]);
+  }, [pathname, moityearData, pathSegments]);
 
-  const getLabel = (segment: string) => {
-    return breadcrumbLabels[segment] || decodeURIComponent(segment);
-  };
+  // ⚠️ ไม่ได้ใช้ `getLabel` ให้ลบทิ้งหรือใช้ใน <Breadcrumbs />
+  // const getLabel = (segment: string) => {
+  //   return breadcrumbLabels[segment] || decodeURIComponent(segment);
+  // };
 
-   try{
-   
-      const [clicked, setClicked] = useState<number | null>(null)
-      const [clicksubmenu, setClickSubmenu] = useState<number | null>(null)
-      const fcYear = moityearData?.[0]?.fc_year || "ไม่พบข้อมูล"; 
+  // ✅ ปรับใหม่ให้การเช็คอยู่ **หลังจาก Hook ทั้งหมด**
+  if (!moityearData) {
+    return <div>Failed to load Moit data.</div>;
+  }
+
+  const fcYear = moityearData?.[0]?.fc_year || "ไม่พบข้อมูล";
+
+  try {
     return (
       <div className="lg:container mx-auto p-2 overflow-hidden mb-10">
          <Breadcrumbs pathname={pathname} breadcrumbLabels={breadcrumbLabels} />
@@ -252,8 +241,9 @@ const Moityear: React.FC<moitProps> = ({ moityearData , url1 , url2 }) => {
           </div>
       </div>
     )
-   }catch(err){
-    notFound()
+   }catch{
+    notFound(); // ⚠️ return หรือ throw ต้องมีผลลัพธ์
+    return null;
    }
    
 }
