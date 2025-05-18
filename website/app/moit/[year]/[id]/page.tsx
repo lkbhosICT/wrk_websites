@@ -151,8 +151,6 @@ const MoitId = async ({
   const apiUrl = `${urlApi}moit/${year}/${id}`;
   const urlImg1 = `${urlApi}geturl/bg_head.jpg`;
   const getview = `${urlApi}view-count/moit/${id}`;
-  const getdownload = `${urlApi}download-count/moit/${id}`;
-
   try {
     const [response, imgurl1, rawview] = await Promise.all([
       fetch(apiUrl, {
