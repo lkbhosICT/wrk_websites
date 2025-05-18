@@ -8,7 +8,7 @@ interface PageProps {
 const isValidObjectId = (id: string) => mongoose.Types.ObjectId.isValid(id);
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { year, id } = await params;
+  const { year, id } = params;
 
   if (!year || !/^\d+$/.test(year) || !id || !isValidObjectId(id)) {
     return {
@@ -135,7 +135,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 
 const MoitId = async ({ params }: PageProps) => {
-  const { year, id } = await params;
+  const { year, id } = params;
   if (!year || !/^\d+$/.test(year)) {
     notFound()
   }

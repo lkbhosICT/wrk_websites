@@ -104,7 +104,7 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
           return () => clearInterval(interval);
         }
       });
-  }, [id, pdfname, secretKey]);
+  }, [id, pdfname, secretKey, encryptAES]);
   
 
   return (
