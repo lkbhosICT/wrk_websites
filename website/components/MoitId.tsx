@@ -41,10 +41,6 @@ interface ViewCount {
   view_count: number;
 }
 
-interface DownloadCount {
-  download_count: number;
-}
-
 type RawItem = SubtitleItem | ChildrenItem;
 
 interface Props {

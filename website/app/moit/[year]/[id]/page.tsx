@@ -154,7 +154,7 @@ const MoitId = async ({
   const getdownload = `${urlApi}download-count/moit/${id}`;
 
   try {
-    const [response, imgurl1, rawview, rawdownload] = await Promise.all([
+    const [response, imgurl1, rawview] = await Promise.all([
       fetch(apiUrl, {
         method: "GET",
         cache: "no-store",
@@ -179,25 +179,17 @@ const MoitId = async ({
           Authorization: `Bearer ${apiKey}`,
         },
       }),
-      fetch(getdownload, {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-      }),
+      
     ]);
 
-    if (!response.ok || !imgurl1.ok || !rawview.ok || !rawdownload.ok) {
+    if (!response.ok || !imgurl1.ok || !rawview.ok) {
       throw new Error("Failed to fetch data");
     }
 
-    const [data, urlData1, dataview, datadownload] = await Promise.all([
+    const [data, urlData1, dataview] = await Promise.all([
       response.json(),
       imgurl1.json(),
       rawview.json(),
-      rawdownload.json(),
     ]);
 
     return (
