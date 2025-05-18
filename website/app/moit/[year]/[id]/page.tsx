@@ -112,7 +112,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         locale: "th_TH", 
       },
     };
-  } catch (_err) {
+  } catch (err) {
+    console.error("Error fetching menu:", err);
     return {
       title: `ข้อมูลปี ${year}`,
       description: "ไม่สามารถโหลดข้อมูลได้",
@@ -205,7 +206,8 @@ const MoitId = async ({ params }: PageProps) => {
 
    return <MoitIdComponent items = {data} imgurl = {urlData1} viewdata={dataview} downloaddata={datadownload}/>
 
-  } catch (_err) {
+  } catch (err) {
+      console.error("Error fetching menu:", err);
       return <div>Failed to load data for MOIT.</div>;
   }
 };
