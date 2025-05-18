@@ -2,15 +2,14 @@ import { Metadata } from "next";
 import MoitIdComponent from "@/components/MoitId";
 import mongoose from "mongoose";
 import { notFound } from "next/navigation";
-interface PageProps {
-  params: {
-    year: string;
-    id: string;
-  };
-}
+
+// เช็ค ObjectId ที่ใช้ใน MongoDB
 const isValidObjectId = (id: string) => mongoose.Types.ObjectId.isValid(id);
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+// 🧠 สร้าง Metadata จาก API
+export async function generateMetadata(
+  { params }: { params: { year: string; id: string } }
+): Promise<Metadata> {
   const { year, id } = params;
 
   if (!year || !/^\d+$/.test(year) || !id || !isValidObjectId(id)) {
@@ -30,10 +29,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     };
   }
-  const baseUrl = `${process.env.URL_API_NEXT}geturl/lkbhos-ita.jpg` ;
+
   const apiKey = process.env.API_FIRST_KEY ?? "";
   const urlApi = process.env.URL_API_NEXT ?? "";
   const urlfull = process.env.URL_FULL_LINK ?? "";
+  const baseUrl = `${urlApi}geturl/lkbhos-ita.jpg`;
 
   if (!apiKey || !urlApi) {
     return {
@@ -42,10 +42,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const apiUrl = `${urlApi}moit/${year}/${id}`;
   try {
-    const [response01, url01 ] = await Promise.all([
-      fetch(apiUrl, {
+    const [response01, url01] = await Promise.all([
+      fetch(`${urlApi}moit/${year}/${id}`, {
         method: "GET",
         cache: "no-store",
         headers: {
@@ -53,54 +52,48 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           Authorization: `Bearer ${apiKey}`,
         },
       }),
-      fetch(`${baseUrl}`, {
+      fetch(baseUrl, {
         method: "GET",
         cache: "no-store",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
       }),
-    ])
+    ]);
 
     if (!response01.ok || !url01.ok) throw new Error("Failed to fetch data");
 
     const [data, dataurl] = await Promise.all([
-        response01.json(),
-        url01.json()
-    ])
-   
-    
-    const firstItem = Array.isArray(data) && data.length > 0 ? data[0] : null;
-    const urlRaw = dataurl?.url ?? "ไม่มีข้อมูล"
-    const numsValue = firstItem?.doc_nums ?? "ไม่มีข้อมูล";  
+      response01.json(),
+      url01.json(),
+    ]);
 
-    let title = null;
-    let numsFromTitle = null;
-    
+    const firstItem = Array.isArray(data) && data.length > 0 ? data[0] : null;
+    const urlRaw = dataurl?.url ?? "ไม่มีข้อมูล";
+    const numsValue = firstItem?.doc_nums ?? "ไม่มีข้อมูล";
+
+    let title = "";
+    let numsFromTitle = "";
+
     if ("children_title" in firstItem) {
       title = firstItem.children_title;
     } else if ("subtitle_title" in firstItem) {
       title = firstItem.subtitle_title;
     }
-     
-    
-  if("subtitle_nums" in firstItem){
-    numsFromTitle = firstItem.subtitle_nums
-  } else if ("children_nums" in firstItem){
-    numsFromTitle = firstItem.children_nums
-  }
-  
 
-    const maxLength30 = 30;  
-    const maxLength140 = 140; 
-    const cutTitle30 = title.length > maxLength30 ? title.slice(0, maxLength30) + "..." : title
-    const cutTitle140 = title.length > maxLength140 ? title.slice(0, maxLength140) + "..." : title
+    if ("subtitle_nums" in firstItem) {
+      numsFromTitle = firstItem.subtitle_nums;
+    } else if ("children_nums" in firstItem) {
+      numsFromTitle = firstItem.children_nums;
+    }
 
+    const cutTitle30 = title.length > 30 ? title.slice(0, 30) + "..." : title;
+    const cutTitle140 = title.length > 140 ? title.slice(0, 140) + "..." : title;
 
     return {
       title: `(MOIT${numsValue}) ข้อ${numsFromTitle} ${cutTitle30}`,
-      description:`โรงพยาบาลลานกระบือ MITAS ปีงบประมาณ${year} (MOIT${numsValue}) ข้อ${numsFromTitle} ${cutTitle140} `,
+      description: `โรงพยาบาลลานกระบือ MITAS ปีงบประมาณ${year} (MOIT${numsValue}) ข้อ${numsFromTitle} ${cutTitle140}`,
       openGraph: {
         title: `(MOIT${numsValue})ข้อ${numsFromTitle}${cutTitle30}`,
         description: `โรงพยาบาลลานกระบือ MITAS ปีงบประมาณ${year} (MOIT${numsValue}) ข้อ${numsFromTitle} ${cutTitle140}`,
@@ -112,11 +105,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           },
         ],
         siteName: "โรงพยาบาลลานกระบือ",
-        locale: "th_TH", 
+        locale: "th_TH",
       },
     };
   } catch (err) {
-    console.error("Error fetching menu:", err);
+    console.error("Error fetching metadata:", err);
     return {
       title: `ข้อมูลปี ${year}`,
       description: "ไม่สามารถโหลดข้อมูลได้",
@@ -135,85 +128,90 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-
-
-const MoitId = async ({ params }: PageProps) => {
+// 🧩 Page Component
+const MoitId = async ({
+  params,
+}: {
+  params: { year: string; id: string };
+}) => {
   const { year, id } = params;
-  if (!year || !/^\d+$/.test(year)) {
-    notFound()
-  }
 
-  if (!id || !isValidObjectId(id)) {
-    notFound()
+  if (!year || !/^\d+$/.test(year) || !isValidObjectId(id)) {
+    notFound();
   }
 
   const apiKey = process.env.API_FIRST_KEY ?? "";
   const urlApi = process.env.URL_API_NEXT ?? "";
-  
 
   if (!apiKey || !urlApi) {
-      console.error("Missing API key or URL in environment variables.");
-      return <div>Server configuration error.</div>;
+    console.error("Missing API key or URL in environment variables.");
+    return <div>Server configuration error.</div>;
   }
 
   const apiUrl = `${urlApi}moit/${year}/${id}`;
   const urlImg1 = `${urlApi}geturl/bg_head.jpg`;
   const getview = `${urlApi}view-count/moit/${id}`;
   const getdownload = `${urlApi}download-count/moit/${id}`;
+
   try {
     const [response, imgurl1, rawview, rawdownload] = await Promise.all([
       fetch(apiUrl, {
         method: "GET",
         cache: "no-store",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
       }),
-      fetch(`${urlImg1}`, {
+      fetch(urlImg1, {
         method: "GET",
         cache: "no-store",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
       }),
-      fetch(`${getview}`, {
+      fetch(getview, {
         method: "GET",
         cache: "no-store",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
       }),
-      fetch(`${getdownload}`, {
+      fetch(getdownload, {
         method: "GET",
         cache: "no-store",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
       }),
-    ])
-    
+    ]);
 
     if (!response.ok || !imgurl1.ok || !rawview.ok || !rawdownload.ok) {
-        throw new Error(`Failed to fetch data, Status: ${response.status}`);
+      throw new Error("Failed to fetch data");
     }
-    const [data , urlData1, dataview, datadownload]= await Promise.all([
+
+    const [data, urlData1, dataview, datadownload] = await Promise.all([
       response.json(),
       imgurl1.json(),
       rawview.json(),
-      rawdownload.json()
-    ]) 
+      rawdownload.json(),
+    ]);
 
-   return <MoitIdComponent items = {data} imgurl = {urlData1} viewdata={dataview} downloaddata={datadownload}/>
-
+    return (
+      <MoitIdComponent
+        items={data}
+        imgurl={urlData1}
+        viewdata={dataview}
+        downloaddata={datadownload}
+      />
+    );
   } catch (err) {
-      console.error("Error fetching menu:", err);
-      return <div>Failed to load data for MOIT.</div>;
+    console.error("Error fetching page data:", err);
+    return <div>Failed to load data for MOIT.</div>;
   }
 };
 
- 
-export default MoitId
+export default MoitId;
