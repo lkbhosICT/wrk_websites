@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "cp ./node_modules/pdfjs-dist/build/pdf.worker.min.mjs ./public/"
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
@@ -23,7 +22,6 @@
     "mongoose": "^8.12.1",
     "moongoose": "^0.0.5",
     "next": "15.1.6",
-    "pdfjs-dist": "^5.0.375",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "remixicon": "^4.6.0",
