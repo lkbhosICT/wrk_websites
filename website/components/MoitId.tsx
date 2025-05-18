@@ -140,7 +140,7 @@ const MoitId: React.FC<Props> = ({ items, imgurl, viewdata, downloaddata }) => {
           </div>
         </div>
       </div>
-      <ShowPic makeBy={make_by} view={view} download={download} id={id} pdfname={pdf} />
+      <ShowPic makeBy={make_by} view={view} id={id} pdfname={pdf} />
     </div>
   );
 };
