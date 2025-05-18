@@ -1,4 +1,3 @@
-import Banner from "@/components/Banner";
 import Checktable from "@/components/Checktable";
 import Bannerdata from "@/components/Bannerdata";
 import Bordnews from "@/components/Bordnews";

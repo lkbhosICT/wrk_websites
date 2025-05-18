@@ -45,7 +45,7 @@ export async function GET(request, { params }) {
       const data = await response.json();
       return Response.json(data);
     }catch(err){
-        console.error("Error fetching menu:", error);
+        console.error("Error fetching menu:", err);
         return new Response(JSON.stringify({ error: "Failed to fetch menu data" }), { status: 500 });
     }
 }

@@ -112,7 +112,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         locale: "th_TH", 
       },
     };
-  } catch (error) {
+  } catch (_err) {
     return {
       title: `ข้อมูลปี ${year}`,
       description: "ไม่สามารถโหลดข้อมูลได้",
@@ -205,7 +205,7 @@ const MoitId = async ({ params }: PageProps) => {
 
    return <MoitIdComponent items = {data} imgurl = {urlData1} viewdata={dataview} downloaddata={datadownload}/>
 
-  } catch (err) {
+  } catch (_err) {
       return <div>Failed to load data for MOIT.</div>;
   }
 };

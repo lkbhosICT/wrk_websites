@@ -126,7 +126,7 @@ const MoitYear = async({ params }: PageProps) => {
         ])
 
         return <Moityear moityearData = {data} url1= {urlData1} url2= {urlData2}/>
-    } catch (err) {
+    } catch (_err) {
         return <div>Failed to load data for year {year}.</div>;
     }
 }

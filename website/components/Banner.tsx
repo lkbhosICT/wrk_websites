@@ -1,7 +1,7 @@
 "use client";
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCube, Pagination, Autoplay } from 'swiper/modules';
+import { EffectCube, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-cube';
 import 'swiper/css/pagination';
