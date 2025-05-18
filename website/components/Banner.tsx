@@ -144,7 +144,14 @@ const Banner: React.FC<bannerProps> = ({bannerData}) => {
                                 <DialogHeader className="hidden">
                                   <DialogTitle>My Modal</DialogTitle>
                                 </DialogHeader>
-                                <img src={img.path} alt="Selected" />
+                                <Image
+                                  src={img.path}
+                                  alt={`Selected Slide ${index}`}
+                                  width={1200}
+                                  height={800}
+                                  className="w-full h-auto object-contain"
+                                  unoptimized
+                                />
                               </DialogContent>
                         </Dialog>
                         </SwiperSlide>

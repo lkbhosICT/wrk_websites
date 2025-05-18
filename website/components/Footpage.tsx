@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image"
 import Link from "next/link"
 
 interface url1{
@@ -28,25 +29,61 @@ const Footpage: React.FC<ImgProps> = ({url1, url2, url3, url4}) => {
         <div className="lg:container lg:m-auto">
             <div className="lg:grid lg:grid-cols-4 content-center text-white">
                 <div className="lg:border-l-2 lg:border-r-2 text-center p-[0.5rem] max-lg:border-b-2 text-footer">
-                    <div className="lg:w-[40px] w-[30px] mx-auto"><img src={`${url1.url}`} alt="Lankrabue-ER" /></div>
+                    <div className="lg:w-[40px] w-[30px] mx-auto">
+                        <Image
+                        src={url1.url}
+                        alt="Lankrabue-ER"
+                        width={40}
+                        height={40}
+                        className="mx-auto"
+                        unoptimized
+                        />
+                        </div>
                     <div>1669 หรือ 055-769-086 ต่อ 140</div>
                     <div>ฉุกเฉิน เรียกรถพยาบาล</div>
                     <div>พร้อมบริการทุกวัน 24 ชม.</div>
                 </div>
                 <div className="lg:border-r-2 lg:text-center text-center p-[0.5rem] max-lg:border-b-2 text-footer">
-                    <div className="lg:w-[40px] w-[30px] mx-auto"><img src={`${url2.url}`} alt="Lankrabue-CALL" /></div>
+                    <div className="lg:w-[40px] w-[30px] mx-auto">
+                        <Image
+                        src={url2.url}
+                        alt="Lankrabue-Call"
+                        width={40}
+                        height={40}
+                        className="mx-auto"
+                        unoptimized
+                        />
+                    </div>
                     <div>โทรหาโรงพยาบาล</div>
                     <div>055-769-086</div>
                     <div>บริการทุกวันจันทร์-ศุกร์ เวลา 08.30-16.30 น.</div>
                 </div>
                 <div className="lg:border-r-2 lg:text-center text-center p-[0.5rem] max-lg:border-b-2 text-footer">
-                    <div className="lg:w-[40px] w-[30px] mx-auto"><img src={`${url3.url}`} alt="Lankrabue-SOCIAL" /></div>
+                    <div className="lg:w-[40px] w-[30px] mx-auto">
+                        <Image
+                        src={url3.url}
+                        alt="Lankrabue-Social"
+                        width={40}
+                        height={40}
+                        className="mx-auto"
+                        unoptimized
+                        />
+                    </div>
                     <div>สอบถามข้อมูลเพิ่มเติมผ่าน Social</div>
                     <div><i className="ri-mail-send-line"></i> : lkbhosp@moph.go.th</div>
                     <div><i className="ri-facebook-circle-fill"></i> : โรงพยาบาลลานกระบือ</div>
                 </div>
                 <div className="lg:border-r-2 lg:text-center text-center p-[0.5rem] text-footer">
-                    <div className="lg:w-[40px] w-[30px] mx-auto"><img src={`${url4.url}`} alt="Lankrabue-MAP" /></div>
+                    <div className="lg:w-[40px] w-[30px] mx-auto">
+                    <Image
+                        src={url2.url}
+                        alt="Lankrabue-MAP"
+                        width={40}
+                        height={40}
+                        className="mx-auto"
+                        unoptimized
+                        />
+                    </div>
                     <div>แผนที่โรงพยาบาล</div>
                     <div className="mt-1"><Link className="text-footer border-[1px] px-3 py-1 hover:bg-white hover:text-moph transition-all duration-700" href="/" >ดูแผนที่</Link></div>
                     <div className="mt-3"><Link className="text-footer border-[1px] px-3 py-1 hover:bg-white hover:text-moph transition-all duration-700" href="/">สอบถาม-ร้องเรียน</Link></div>

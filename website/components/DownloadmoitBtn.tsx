@@ -46,7 +46,7 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
     };
   
     fetchInitialDownloadCount();
-  }, [id]);
+  }, [id,location]);
   
   const handleDownload = async () => {
     setIsLoading(true);

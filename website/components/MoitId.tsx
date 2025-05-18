@@ -61,83 +61,56 @@ const MoitId: React.FC<Props> = ({ items, imgurl, viewdata, downloaddata }) => {
     moit: "MOIT",
   });
 
-  if (!items || items.length === 0) {
-    return <div>ไม่มีข้อมูล</div>;
-  }
-
   const firstItem = items[0];
-  const nums = firstItem.doc_nums;
+  const nums = firstItem?.doc_nums || 0;
   let title = "ไม่พบชื่อเรื่อง";
   let id = "ไม่พบชื่อเรื่อง";
   let make_by = "ไม่พบข้อมูล";
   const view = viewdata.view_count;
   const download = downloaddata.download_count;
   let pdf = "nodata.pdf";
+  let nums_parent = 0;
 
   if ("subtitle_id" in firstItem) {
     id = firstItem.subtitle_id;
+    pdf = firstItem.subtitle_pdfurl;
+    make_by = firstItem.subtitle_make_by;
+    title = firstItem.subtitle_title;
+    nums_parent = firstItem.subtitle_nums;
   } else if ("children_id" in firstItem) {
     id = firstItem.children_id;
-  }
-
-  if ("subtitle_pdfurl" in firstItem) {
-    pdf = firstItem.subtitle_pdfurl;
-  } else if ("children_pdfurl" in firstItem) {
     pdf = firstItem.children_pdfurl;
-  }
-
-  if ("subtitle_make_by" in firstItem) {
-    make_by = firstItem.subtitle_make_by;
-  } else if ("children_make_by" in firstItem) {
     make_by = firstItem.children_make_by;
-  }
-
-  if ("children_title" in firstItem) {
     title = firstItem.children_title;
-  } else if ("subtitle_title" in firstItem) {
-    title = firstItem.subtitle_title;
-  }
-
-  let nums_parent = 0;
-  if ("subtitle_nums" in firstItem) {
-    nums_parent = firstItem.subtitle_nums;
-  } else if ("children_nums" in firstItem) {
     nums_parent = firstItem.children_nums;
   }
 
   useEffect(() => {
-    if (!items || !Array.isArray(items) || items.length === 0) return;
-    if (!pathSegments || !Array.isArray(pathSegments) || pathSegments.length === 0) return;
+    if (!items || items.length === 0 || pathSegments.length === 0) return;
 
     const newLabels: Record<string, string> = { ...breadcrumbLabels };
 
     pathSegments.forEach((segment, index) => {
-      if (!segment || typeof segment !== "string") return;
-      if (typeof index !== "number" || index < 1) return;
-
       if (index === 1) {
-        const yearData = items.find((item) => item?.doc_fc_year?.toString() === segment);
+        const yearData = items.find((itm) => itm?.doc_fc_year?.toString() === segment);
         if (yearData) {
           newLabels[segment] = `ปีงบ ${yearData.doc_fc_year}`;
         }
       }
 
       if (index === 2) {
-        let label: string | undefined;
-        const foundSubtitle = items.find((item) => id === segment);
-        if (foundSubtitle) {
-          const maxLength = 30;
-          const truncated = title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
-          label = `(MOIT ${nums}) ข้อ ${nums_parent}. ${truncated}`;
-        }
-        if (label) {
-          newLabels[segment] = label;
-        }
+        const maxLength = 30;
+        const truncated = title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
+        newLabels[segment] = `(MOIT ${nums}) ข้อ ${nums_parent}. ${truncated}`;
       }
     });
 
     setBreadcrumbLabels(newLabels);
   }, [pathname, items, breadcrumbLabels, id, nums, nums_parent, pathSegments, title]);
+
+  if (!items || items.length === 0) {
+    return <div>ไม่มีข้อมูล</div>;
+  }
 
   return (
     <div className="lg:container mx-auto p-2 overflow-hidden mb-10">
