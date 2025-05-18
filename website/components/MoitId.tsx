@@ -51,10 +51,9 @@ interface Props {
   items: RawItem[];
   imgurl: Url1;
   viewdata: ViewCount;
-  downloaddata: DownloadCount;
 }
 
-const MoitId: React.FC<Props> = ({ items, imgurl, viewdata, downloaddata }) => {
+const MoitId: React.FC<Props> = ({ items, imgurl, viewdata }) => {
   const pathname = usePathname() || "/";
   const pathSegments = pathname.split("/").filter(Boolean);
   const [breadcrumbLabels, setBreadcrumbLabels] = useState<Record<string, string>>({
@@ -67,7 +66,6 @@ const MoitId: React.FC<Props> = ({ items, imgurl, viewdata, downloaddata }) => {
   let id = "ไม่พบชื่อเรื่อง";
   let make_by = "ไม่พบข้อมูล";
   const view = viewdata.view_count;
-  const download = downloaddata.download_count;
   let pdf = "nodata.pdf";
   let nums_parent = 0;
 

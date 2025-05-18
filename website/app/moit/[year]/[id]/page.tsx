@@ -205,7 +205,6 @@ const MoitId = async ({
         items={data}
         imgurl={urlData1}
         viewdata={dataview}
-        downloaddata={datadownload}
       />
     );
   } catch (err) {
