@@ -23,6 +23,7 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
   const [status, setStatus] = useState<string>("pending");
   const [total, setTotal] = useState(0);
   const [numpage, setNumpage] = useState(0);
+  const [filenameencyp , setFilenameencyp] = useState<string>("ไม่มีข้อมูล")
 
   const key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_KEY || "");
   const iv = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_IV || "");
@@ -40,30 +41,31 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
     throw new Error("Missing API key");
   }
 
-  const encryptedId = encryptAES(id);
-  const encryptedFilename = encryptAES(pdfname);
-  const timestamp = Math.floor(Date.now() / 1000);
-
-  const rawString = encryptedId + encryptedFilename + timestamp;
-  const rawStrings = encryptedId + timestamp;
-
-  const signature = CryptoJS.HmacSHA256(rawString, secretKey).toString();
-  const signatures = CryptoJS.HmacSHA256(rawStrings, secretKey).toString();
-
-  const body = {
-    id: encryptedId,
-    filename: encryptedFilename,
-    timestamp: timestamp,
-    signature: signature,
-  };
-
-  const bodyget = {
-    id: encryptedId,
-    timestamp: timestamp,
-    signature: signatures,
-  };
-
   useEffect(() => {
+    const timestamp = Math.floor(Date.now() / 1000);
+  
+    const encryptedId = encryptAES(id);
+    const encryptedFilename = encryptAES(pdfname);
+    setFilenameencyp(encryptedFilename)
+    const rawString = encryptedId + encryptedFilename + timestamp;
+    const rawStrings = encryptedId + timestamp;
+  
+    const signature = CryptoJS.HmacSHA256(rawString, secretKey).toString();
+    const signatures = CryptoJS.HmacSHA256(rawStrings, secretKey).toString();
+  
+    const body = {
+      id: encryptedId,
+      filename: encryptedFilename,
+      timestamp,
+      signature,
+    };
+  
+    const bodyget = {
+      id: encryptedId,
+      timestamp,
+      signature: signatures,
+    };
+  
     fetch(`${process.env.NEXT_PUBLIC_API_URL}tasks`, {
       method: "POST",
       headers: {
@@ -92,7 +94,7 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
                 setStatus(data.status);
                 setProgress(data.progress);
                 setTotal(data.total);
-
+  
                 if (data.status === "done") {
                   setImages(data.img_name);
                   clearInterval(interval);
@@ -102,7 +104,8 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
           return () => clearInterval(interval);
         }
       });
-  }, [body, bodyget]);
+  }, [id, pdfname, secretKey]);
+  
 
   return (
     <div className="relative lg:w-[90%] mx-auto text-center">
@@ -158,7 +161,7 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
                   <DownloadmoitBtn
                     id={id}
                     location="moit"
-                    filename={encryptedFilename}
+                    filename={filenameencyp}
                   />
                 </div>
               )}

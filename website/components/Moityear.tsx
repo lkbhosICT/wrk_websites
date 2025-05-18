@@ -84,7 +84,7 @@ const Moityear: React.FC<moitProps> = ({ moityearData , url1 , url2 }) => {
     });
 
     setBreadcrumbLabels(newLabels);
-  }, [pathname, moityearData, pathSegments]);
+  }, [pathname, moityearData, pathSegments, breadcrumbLabels]);
 
   // ⚠️ ไม่ได้ใช้ `getLabel` ให้ลบทิ้งหรือใช้ใน <Breadcrumbs />
   // const getLabel = (segment: string) => {
