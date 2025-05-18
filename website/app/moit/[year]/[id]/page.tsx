@@ -3,7 +3,10 @@ import MoitIdComponent from "@/components/MoitId";
 import mongoose from "mongoose";
 import { notFound } from "next/navigation";
 interface PageProps {
-  params: { year?: string, id?: string};
+  params: {
+    year: string;
+    id: string;
+  };
 }
 const isValidObjectId = (id: string) => mongoose.Types.ObjectId.isValid(id);
 
