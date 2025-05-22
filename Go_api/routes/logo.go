@@ -9,5 +9,5 @@ import (
 
 func LogoRoutes(app *fiber.App) {
 	api := app.Group("/api")
-	api.Get("/logo", middleware.AuthMiddle, controllers.ListLogo)
+	api.Get("/logo",controllers.ListLogo)
 }
