@@ -2,13 +2,16 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# 👇 Copy env file เข้าไปก่อน เพื่อใช้ตอน build
+COPY .env.local .env.local
+
 COPY package*.json ./
 COPY . .
 
-COPY .env.local .env.local
-
 RUN npm install
 RUN npm run build
+
+# -----------
 
 FROM node:20-alpine
 
