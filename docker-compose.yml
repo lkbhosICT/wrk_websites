@@ -31,8 +31,8 @@ services:
     environment:
       - MONGODB_URI=mongodb://admin:password@mongodb:27017/admin?replicaSet=rs0&authSource=admin
     volumes:
-      - ./files:/app/files
-      - ./convert:/app/convert
+      - ./Go_api/files:/app/files
+      - ./Go_api/convert:/app/convert
     depends_on:
       - mongodb
     networks:
