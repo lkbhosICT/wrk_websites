@@ -1,11 +1,15 @@
 export async function GET() {
+  
   const apiKey = process.env.API_SECRET_KEY;
   const api_secon_Key = process.env.API_SECON_KEY;
   const URL_API = process.env.URL_API_LINK;
-  
+
   if(!apiKey || !api_secon_Key || !URL_API){
     return new Response(JSON.stringify({ error: "Failed to data .ENV" }), { status: 500 });
   }
+
+
+
   try {
     const uuidResponse = await fetch(`${URL_API}getapikey`, {
       method: "GET",
