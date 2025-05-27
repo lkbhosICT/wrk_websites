@@ -81,26 +81,28 @@ const MoitId: React.FC<Props> = ({ items, imgurl, viewdata }) => {
 
   useEffect(() => {
     if (!items || items.length === 0 || pathSegments.length === 0) return;
-
-    const newLabels: Record<string, string> = { ...breadcrumbLabels };
-
-    pathSegments.forEach((segment, index) => {
-      if (index === 1) {
-        const yearData = items.find((itm) => itm?.doc_fc_year?.toString() === segment);
-        if (yearData) {
-          newLabels[segment] = `ปีงบ ${yearData.doc_fc_year}`;
+  
+    setBreadcrumbLabels((prev) => {
+      const newLabels: Record<string, string> = { ...prev };
+  
+      pathSegments.forEach((segment, index) => {
+        if (index === 1) {
+          const yearData = items.find((itm) => itm?.doc_fc_year?.toString() === segment);
+          if (yearData) {
+            newLabels[segment] = `ปีงบ ${yearData.doc_fc_year}`;
+          }
         }
-      }
-
-      if (index === 2) {
-        const maxLength = 30;
-        const truncated = title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
-        newLabels[segment] = `(MOIT ${nums}) ข้อ ${nums_parent}. ${truncated}`;
-      }
+  
+        if (index === 2) {
+          const maxLength = 30;
+          const truncated = title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
+          newLabels[segment] = `(MOIT ${nums}) ข้อ ${nums_parent}. ${truncated}`;
+        }
+      });
+  
+      return newLabels;
     });
-
-    setBreadcrumbLabels(newLabels);
-  }, [pathname, items, breadcrumbLabels, id, nums, nums_parent, pathSegments, title]);
+  }, []);
 
   if (!items || items.length === 0) {
     return <div>ไม่มีข้อมูล</div>;

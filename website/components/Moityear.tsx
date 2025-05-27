@@ -54,44 +54,22 @@ const Moityear: React.FC<moitProps> = ({ moityearData , url1 , url2 }) => {
   const [clicked, setClicked] = useState<number | null>(null);
   const [clicksubmenu, setClickSubmenu] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!moityearData || moityearData.length === 0 || !pathSegments || pathSegments.length === 0) return;
+ useEffect(() => {
+  if (!moityearData || moityearData.length === 0 || !pathSegments || pathSegments.length === 0) return;
 
-    const newLabels: Record<string, string> = { ...breadcrumbLabels };
+  const newLabels: Record<string, string> = { moit: "MOIT" };
 
-    pathSegments.forEach((segment, index) => {
-      if (!segment || typeof segment !== "string") return;
+  pathSegments.forEach((segment, index) => {
+    if (!segment || typeof segment !== "string") return;
 
-      if (index === 1) {
-        const yearData = moityearData.find((item) => item?.fc_year?.toString() === segment);
-        if (yearData) newLabels[segment] = `ปีงบ ${yearData.fc_year}`;
-      }
+    if (index === 1) {
+      const yearData = moityearData.find((item) => item?.fc_year?.toString() === segment);
+      if (yearData) newLabels[segment] = `ปีงบ ${yearData.fc_year}`;
+    }
+  });
 
-      if (index === 2) {
-        const parentData = moityearData
-          .flatMap((item) => item?.childrens || [])
-          .find((child) => child?._id === segment);
-        if (parentData) newLabels[segment] = parentData.title;
-      }
-
-      if (index === 3) {
-        const childData = moityearData
-          .flatMap((item) => item?.childrens || [])
-          .flatMap((child) => child?.subtitle || [])
-          .find((sub) => sub?._id === segment);
-        if (childData) newLabels[segment] = childData.title;
-      }
-    });
-
-    setBreadcrumbLabels(newLabels);
-  }, [pathname, moityearData, pathSegments, breadcrumbLabels]);
-
-  // ⚠️ ไม่ได้ใช้ `getLabel` ให้ลบทิ้งหรือใช้ใน <Breadcrumbs />
-  // const getLabel = (segment: string) => {
-  //   return breadcrumbLabels[segment] || decodeURIComponent(segment);
-  // };
-
-  // ✅ ปรับใหม่ให้การเช็คอยู่ **หลังจาก Hook ทั้งหมด**
+  setBreadcrumbLabels(newLabels);
+}, [pathname]);
   if (!moityearData) {
     return <div>Failed to load Moit data.</div>;
   }

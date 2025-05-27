@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import DownloadmoitBtn from "./DownloadmoitBtn";
 import CryptoJS from "crypto-js";
 import Image from "next/image";
@@ -25,16 +25,15 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
   const [numpage, setNumpage] = useState(0);
   const [filenameencyp, setFilenameencyp] = useState<string>("ไม่มีข้อมูล");
 
-  const key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_KEY || "");
-  const iv = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_IV || "");
-
-  const encryptAES = useCallback((text: string) => {
-    return CryptoJS.AES.encrypt(text, key, {
-      iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7,
-    }).toString();
-  }, [key, iv]);
+  // Memoize key and iv so they don't change every render
+  const key = useMemo(
+    () => CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_KEY || ""),
+    []
+  );
+  const iv = useMemo(
+    () => CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_CRYPTO_IV || ""),
+    []
+  );
 
   const secretKey = process.env.NEXT_PUBLIC_API_KEY || "";
   if (!secretKey) {
@@ -42,6 +41,14 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
   }
 
   useEffect(() => {
+    const encryptAES = (text: string) => {
+      return CryptoJS.AES.encrypt(text, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      }).toString();
+    };
+
     const timestamp = Math.floor(Date.now() / 1000);
 
     const encryptedId = encryptAES(id);
@@ -102,10 +109,12 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
                 }
               });
           }, 2000);
+
+          // 💡 This ensures cleanup on unmount
           return () => clearInterval(interval);
         }
       });
-  }, [id, pdfname, secretKey, encryptAES]);
+  }, [id, pdfname, secretKey, key, iv]);
 
   return (
     <div className="relative lg:w-[90%] mx-auto text-center">

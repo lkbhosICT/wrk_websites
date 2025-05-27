@@ -20,9 +20,8 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
       const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
   
       if (!apiKey || !urlApi) return;
-  
       const apiUrl = `${urlApi}download-count/${location}/${id}`;
-  
+      console.log(apiUrl)
       try {
         const response = await fetch(apiUrl, {
           method: "GET",

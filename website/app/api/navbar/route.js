@@ -3,11 +3,12 @@ export async function GET() {
   const apiKey = process.env.API_SECRET_KEY;
   const api_secon_Key = process.env.API_SECON_KEY;
   const URL_API = process.env.URL_API_LINK;
+  
 
-  if(!apiKey || !api_secon_Key || !URL_API){
-    return new Response(JSON.stringify({ error: "Failed to data .ENV" }), { status: 500 });
+  if (!apiKey || !api_secon_Key || !URL_API) {
+    console.error("❌ Missing required ENV variables");
+    return new Response(JSON.stringify({ error: "Failed to load data from .ENV" }), { status: 500 });
   }
-
 
 
   try {
