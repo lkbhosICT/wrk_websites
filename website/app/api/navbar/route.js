@@ -36,7 +36,6 @@ export async function GET() {
 
     const response = await fetch(`${URL_API}menu`, {
       method: "GET",
-      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${ex_apikey}:${ex_signature}`

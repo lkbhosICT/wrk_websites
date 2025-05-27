@@ -13,7 +13,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const urlImg = await fetch(`${baseUrl}`, {
       method: "GET",
-      cache: "no-store",
       headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
@@ -100,7 +99,6 @@ const MoitYear = async({ params }: PageProps) => {
           }),
           fetch(`${urlImg1}`, {
             method: "GET",
-            cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${apiKey}`,
@@ -108,7 +106,6 @@ const MoitYear = async({ params }: PageProps) => {
           }),
           fetch(`${urlImg2}`, {
             method: "GET",
-            cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${apiKey}`,

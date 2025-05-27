@@ -1,112 +1,104 @@
 "use client";
 import { useEffect, useState } from "react";
 
-interface btnmoitProps {
+interface BtnMoitProps {
   id: string;
   filename: string;
   location: string;
 }
 
-const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => {
-
-
+const DownloadMoitBtn: React.FC<BtnMoitProps> = ({ id, filename, location }) => {
   const [downloadCount, setDownloadCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const time = Math.floor(Date.now() / 1000);
 
+  const apiKey = process.env.NEXT_PUBLIC_API_FIRST_KEY ?? "";
+  const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
+
   useEffect(() => {
-    const fetchInitialDownloadCount = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_API_FIRST_KEY ?? "";
-      const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
+    const fetchDownloadCount = async () => {
       if (!apiKey || !urlApi) return;
-      const apiUrl = `${urlApi}download-count/${location}/${id}`;
       try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          cache: "no-store",
+        const res = await fetch(`${urlApi}download-count/${location}/${id}`, {
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`,
           },
-        });  
-        if (response.ok) {
-          const data = await response.json();
-          const count = Number(data.download_count) || 0;
-          setDownloadCount(count);
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setDownloadCount(Number(data.download_count) || 0);
         } else {
-          console.warn("Failed to fetch initial download count.");
+          console.warn("⚠️ Unable to fetch download count");
         }
       } catch (error) {
-        console.error("Error fetching initial count:", error);
+        console.error("❌ Error fetching download count:", error);
       }
     };
-    fetchInitialDownloadCount();
-  }, [id,location]);
-  
+
+    fetchDownloadCount();
+  }, [id, location, apiKey, urlApi]);
+
   const handleDownload = async () => {
-    setIsLoading(true);
-    const apiKey = process.env.NEXT_PUBLIC_API_FIRST_KEY ?? "";
-    const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
     if (!apiKey || !urlApi) {
-      console.error("Missing API key or URL in environment variables.");
-      setIsLoading(false);
+      console.error("❌ Missing environment variables.");
       return;
     }
-    const apiUrl = `${urlApi}download-count/${location}/${id}`;
-    const urldownloadApi = `${urlApi}download-files`;
+
+    setIsLoading(true);
+
     try {
-      const response = await fetch(urldownloadApi, {
+      const downloadRes = await fetch(`${urlApi}download-files`, {
         method: "POST",
-        cache: "no-store",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          source: filename,
-          id: id,
-        }),
+        body: JSON.stringify({ source: filename, id }),
+        cache: "no-store",
       });
-     if(response.ok){
-      const result = await response.json(); 
-      if(result.link){
-        const response2 = await fetch(apiUrl, {
-          method: "POST",
-          cache: "no-store",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
-          },
-        });
-        if(response2.ok){
-          const result2 = await response2.json(); 
-          const downloadnumb = result2?.download_count || "ไม่มีข้อมูล"
-          setDownloadCount(downloadnumb)
-          const link = result.link || "ไม่มีข้อมูล"
-          const res = await fetch(link);
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "11234__"+downloadnumb+time
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
 
-          window.URL.revokeObjectURL(url); // cleanup
-        }else{
-          console.log("response2 not response")
-        }
+      if (!downloadRes.ok) throw new Error("❌ Failed to request download link.");
+
+      const { link } = await downloadRes.json();
+      if (!link) throw new Error("❌ No download link returned.");
+
+      const countRes = await fetch(`${urlApi}download-count/${location}/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+        },
+        cache: "no-store",
+      });
+
+      if (countRes.ok) {
+        const countData = await countRes.json();
+        const updatedCount = Number(countData.download_count) || downloadCount;
+        setDownloadCount(updatedCount);
+      } else {
+        console.warn("⚠️ Failed to update download count");
       }
-     }else{
-      console.log("dddd")
-     }
-    } catch (err) {
-      console.error("❌ Error fetching:", err);
+
+      const fileRes = await fetch(link);
+      const blob = await fileRes.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = `${filename.replace(/\.[^/.]+$/, "")}_${downloadCount}_${time}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("❌ Download failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="flex items-center justify-center flex-col lg:max-w-[300px] max-w-[100px]">
       <button
@@ -118,9 +110,7 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
           {isLoading ? (
             <span className="loading loading-dots loading-xs"></span>
           ) : (
-            <span>
-              <i className="ri-download-line me-1"></i>ดาวน์โหลด
-            </span>
+            <span><i className="ri-download-line me-1"></i>ดาวน์โหลด</span>
           )}
         </span>
       </button>
@@ -130,4 +120,5 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
     </div>
   );
 };
-export default DownloadmoitBtn;
+
+export default DownloadMoitBtn;

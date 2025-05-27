@@ -163,7 +163,6 @@ const MoitId = async ({
       }),
       fetch(urlImg1, {
         method: "GET",
-        cache: "no-store",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,

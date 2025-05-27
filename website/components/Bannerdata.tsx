@@ -5,7 +5,6 @@ const Bannerdata = async () => {
      try{
        const bannerRes = await fetch(`${UrlApi}banner`,{
         method: "GET",
-        cache: "no-store",
         headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${Apikey}`,
