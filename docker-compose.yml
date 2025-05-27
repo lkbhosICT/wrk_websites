@@ -53,6 +53,21 @@ services:
       - ./website/.env
     networks:
       - app_network
+
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - nextjs
+    networks:
+      - app_network
     
 volumes:
    mongodb_data:
