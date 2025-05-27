@@ -6,7 +6,6 @@ const NavbarMenu = async () => {
     const [navbarRes, logoRes ] = await Promise.all([
         fetch(`${UrlApi}navbar`,{
             method: "GET",
-            cache: "no-store",
             headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${Apikey}`,
@@ -15,7 +14,6 @@ const NavbarMenu = async () => {
 
         fetch(`${UrlApi}logo`,{
             method: "GET",
-            cache: "no-store",
             headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${Apikey}`,

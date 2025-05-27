@@ -17,7 +17,6 @@ const FootpageData = async () => {
         const [url1 ,url2 ,url3, url4] = await Promise.all([
             fetch(`${urlImg1}`, {
                 method: "GET",
-                cache: "no-store",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`,
@@ -25,7 +24,6 @@ const FootpageData = async () => {
               }),
               fetch(`${urlImg2}`, {
                 method: "GET",
-                cache: "no-store",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`,
@@ -33,7 +31,6 @@ const FootpageData = async () => {
               }),
               fetch(`${urlImg3}`, {
                 method: "GET",
-                cache: "no-store",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`,
@@ -41,7 +38,6 @@ const FootpageData = async () => {
               }),
               fetch(`${urlImg4}`, {
                 method: "GET",
-                cache: "no-store",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`,

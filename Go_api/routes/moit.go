@@ -1,14 +1,16 @@
 package routes
 
-import(
-	"github.com/gofiber/fiber/v2"
+import (
 	"go-api/controllers"
+	"go-api/middleware"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func MoitRoute(app *fiber.App){
 	api := app.Group("/api")
 
-	api.Get("/moit/:year",controllers.ReadMoit)
-	api.Get("/moit/:year/:id",controllers.ListMoit)
-	api.Put("/moit/update-view/:id",controllers.PutUpdateview)
+	api.Get("/moit/:year",middleware.AuthMiddle, controllers.ReadMoit)
+	api.Get("/moit/:year/:id",middleware.AuthMiddle,controllers.ListMoit)
+	api.Put("/moit/update-view/:id",middleware.AuthMiddle,controllers.PutUpdateview)
 }

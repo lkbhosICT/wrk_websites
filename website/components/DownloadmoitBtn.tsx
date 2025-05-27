@@ -18,10 +18,8 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
     const fetchInitialDownloadCount = async () => {
       const apiKey = process.env.NEXT_PUBLIC_API_FIRST_KEY ?? "";
       const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
-  
       if (!apiKey || !urlApi) return;
       const apiUrl = `${urlApi}download-count/${location}/${id}`;
-      console.log(apiUrl)
       try {
         const response = await fetch(apiUrl, {
           method: "GET",
@@ -30,8 +28,7 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
             "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`,
           },
-        });
-  
+        });  
         if (response.ok) {
           const data = await response.json();
           const count = Number(data.download_count) || 0;
@@ -43,7 +40,6 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
         console.error("Error fetching initial count:", error);
       }
     };
-  
     fetchInitialDownloadCount();
   }, [id,location]);
   
@@ -51,16 +47,13 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
     setIsLoading(true);
     const apiKey = process.env.NEXT_PUBLIC_API_FIRST_KEY ?? "";
     const urlApi = process.env.NEXT_PUBLIC_URL_API_NEXT ?? "";
-
     if (!apiKey || !urlApi) {
       console.error("Missing API key or URL in environment variables.");
       setIsLoading(false);
       return;
     }
-
     const apiUrl = `${urlApi}download-count/${location}/${id}`;
     const urldownloadApi = `${urlApi}download-files`;
-
     try {
       const response = await fetch(urldownloadApi, {
         method: "POST",
@@ -74,12 +67,9 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
           id: id,
         }),
       });
-
      if(response.ok){
       const result = await response.json(); 
       if(result.link){
-        
-        
         const response2 = await fetch(apiUrl, {
           method: "POST",
           cache: "no-store",
@@ -88,7 +78,6 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
             "Authorization": `Bearer ${apiKey}`,
           },
         });
-
         if(response2.ok){
           const result2 = await response2.json(); 
           const downloadnumb = result2?.download_count || "ไม่มีข้อมูล"
@@ -97,7 +86,6 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
           const res = await fetch(link);
           const blob = await res.blob();
           const url = window.URL.createObjectURL(blob);
-
           const a = document.createElement("a");
           a.href = url;
           a.download = "11234__"+downloadnumb+time
@@ -113,15 +101,12 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
      }else{
       console.log("dddd")
      }
-
     } catch (err) {
       console.error("❌ Error fetching:", err);
     } finally {
       setIsLoading(false);
     }
   };
-
-  
   return (
     <div className="flex items-center justify-center flex-col lg:max-w-[300px] max-w-[100px]">
       <button
@@ -145,5 +130,4 @@ const DownloadmoitBtn: React.FC<btnmoitProps> = ({ id, filename, location }) => 
     </div>
   );
 };
-
 export default DownloadmoitBtn;
