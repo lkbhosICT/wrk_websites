@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DownloadmoitBtn from "./DownloadmoitBtn";
 import CryptoJS from "crypto-js";
-import Image from "next/image";
 
 interface Props {
   makeBy: string;
@@ -140,25 +139,25 @@ const ShowPic: React.FC<Props> = ({ makeBy, view, id, pdfname }) => {
               <div className="divider text-gray-500 lg:my-2 max-lg:my-[0.25rem] text-[0.75rem]">
                 หน้า {idx + 1}
               </div>
-              <Image
-                className="box-shadows-5 w-full h-full"
-                src={item.img}
-                alt={`img${idx}`}
-                width={1000}
-                height={1400}
-                loading="lazy"
-                onContextMenu={(e) => e.preventDefault()}
-                draggable={false}
-                onError={(e) => {
-                  const img = e.currentTarget as HTMLImageElement & {
-                    dataset: { retried?: string };
-                  };
-                  if (!img.dataset.retried) {
-                    img.dataset.retried = "true";
-                    img.src = item.img + `?retry=1`;
-                  }
-                }}
-              />
+              <img
+                  className="box-shadows-5 w-full h-full"
+                  src={item.img}
+                  alt={`img${idx}`}
+                  loading="lazy"
+                  width={1000}
+                  height={1400}
+                  onContextMenu={(e) => e.preventDefault()}
+                  draggable={false}
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement & {
+                      dataset: { retried?: string };
+                    };
+                    if (!img.dataset.retried) {
+                      img.dataset.retried = "true";
+                      img.src = item.img + `?retry=1`;
+                    }
+                  }}
+                />
               {idx === images.length - 1 && (
                 <div className="flex justify-between mt-4">
                   <div className="font-thin text-left">
