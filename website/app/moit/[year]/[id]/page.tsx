@@ -10,7 +10,7 @@ const isValidObjectId = (id: string) => mongoose.Types.ObjectId.isValid(id);
 export async function generateMetadata(
   { params }: { params: { year: string; id: string } }
 ): Promise<Metadata> {
-  const { year, id } = params;
+  const { year, id } = await params;
 
   if (!year || !/^\d+$/.test(year) || !id || !isValidObjectId(id)) {
     return {
@@ -134,7 +134,7 @@ const MoitId = async ({
 }: {
   params: { year: string; id: string };
 }) => {
-  const { year, id } = params;
+  const { year, id } = await params;
 
   if (!year || !/^\d+$/.test(year) || !isValidObjectId(id)) {
     notFound();
