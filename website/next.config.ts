@@ -6,13 +6,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "10.10.5.4",
+        hostname: "go_api",
         port: "8081",
         pathname: "/api/files/**",
       },
       {
         protocol: "http",
-        hostname: "10.10.5.4",
+        hostname: "go_api",
         port: "8081",
         pathname: "/api/converts/**",
       },
