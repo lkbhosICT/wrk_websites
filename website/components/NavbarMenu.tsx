@@ -1,7 +1,7 @@
 import Navbar  from "./Navbar";
 const NavbarMenu = async () => {
   const Apikey =process.env.API_FIRST_KEY
-  const UrlApi = process.env.URL_API_LINK
+  const UrlApi = process.env.URL_API_NEXT
   try{
     const [navbarRes, logoRes ] = await Promise.all([
         fetch(`${UrlApi}navbar`,{
