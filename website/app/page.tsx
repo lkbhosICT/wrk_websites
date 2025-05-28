@@ -1,6 +1,8 @@
 import Checktable from "@/components/Checktable";
 import Bannerdata from "@/components/Bannerdata";
 import Bordnews from "@/components/Bordnews";
+
+
 export const metadata = {
   title: 'โรงพยาบาลลานกระบือ',
   description: 'โรงพยาบาลลานกระบือ อำเภอลานกระบือ จังหวัดกำแพงเพชร สังกัดกระทรวงสาธารณสุข',
@@ -11,31 +13,33 @@ export const metadata = {
     siteName: "เว็บไซต์โรงพยาบาลลานกระบือ สังกัดกระทรวงสาธารณสุข",
     images: [
       {
-        url: "https://lkbhos.moph.go.th/api/files/lkbhos.jpg", 
+        url: "https://lkbhos.moph.go.th/lkbhos.jpg", // ✅ 
         width: 1200,
         height: 630,
-        alt: "lankrbue_hospital",
+        alt: "lankrabue_hospital",
       },
     ],
     locale: "th_TH",
     type: "website",
   },
 };
-const page = () => {
+
+const Page = async () => {
   return (
     <div>
       <div className="bg-[url(/bg_bn.jpg)]">
-        <Bannerdata/>
+        <Bannerdata />
       </div>
       <div className="max-h-max mt-5">
-        <Checktable/>
+        <Checktable />
       </div>
-      <div className="container mx-auto mt-5  w-full h-[600px]">
+      <div className="container mx-auto mt-5 w-full h-[600px]">
         <div className="w-full p-2">
-           <Bordnews/>
+          <Bordnews />
         </div>
+      </div>
     </div>
-  </div>
-  )
-}
-export default page
+  );
+};
+
+export default Page;
