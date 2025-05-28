@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import NavbarMenu from "@/components/NavbarMenu";
 import 'remixicon/fonts/remixicon.css';
 import './globals.css'
 import { Sarabun } from 'next/font/google'
 import FootpageData from "@/components/FootpageData";
 import Backgroup from "@/components/Backgroup";
+import NavbarMenu from "@/components/NavbarMenu";
 const sarabun = Sarabun( {
   weight: ['200','400','500','600'],
   subsets: ['latin', 'thai'],
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Props) {
     <html>
       <body className={`bg-customGray ${sarabun.className} min-h-screen relative`}>
         <Backgroup />
-        <NavbarMenu />
+        <NavbarMenu/>
         <div className='w-full relative max-lg:px-1 mx-auto lg:mt-[4.2rem] max-lg:mt-[3.2rem] break-words'>
           {children}
         </div>
