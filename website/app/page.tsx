@@ -34,7 +34,6 @@ const page = () => {
         <div className="w-full p-2">
            <Bordnews/>
         </div>
-        
     </div>
   </div>
   )

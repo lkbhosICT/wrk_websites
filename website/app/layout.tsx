@@ -19,18 +19,17 @@ export const metadata = {
     icon: '/moph.ico',
   },
 };
-const layout = ({ children }: Props) => {
+export default function RootLayout({ children }: Props) {
   return (
     <html>
       <body className={`bg-customGray ${sarabun.className} min-h-screen relative`}>
-        <Backgroup/>
+        <Backgroup />
         <NavbarMenu />
         <div className='w-full relative max-lg:px-1 mx-auto lg:mt-[4.2rem] max-lg:mt-[3.2rem] break-words'>
           {children}
         </div>
-        <FootpageData/>
+        <FootpageData />
       </body>
     </html>
   )
 }
-export default layout
