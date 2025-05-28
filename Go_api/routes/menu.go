@@ -11,5 +11,5 @@ func MenuRoute(app *fiber.App) {
 	api := app.Group("/api")
 
 	api.Post("/menu",middleware.AuthMiddle, controllers.CreateMenu)
-	api.Get("/menu",middleware.AuthMiddle, controllers.GenerateSignedURLHandler)
+	api.Get("/menu", controllers.GenerateSignedURLHandler)
 }

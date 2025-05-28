@@ -2,7 +2,6 @@ package routes
 
 import (
 	"go-api/controllers"
-	"go-api/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,5 +9,5 @@ import (
 
 func LogoRoutes(app *fiber.App) {
 	api := app.Group("/api")
-	api.Get("/logo",middleware.AuthMiddle,controllers.ListLogo)
+	api.Get("/logo",controllers.ListLogo)
 }
