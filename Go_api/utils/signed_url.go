@@ -18,7 +18,7 @@ func GenerateSignedURL(filename string) (string, error) {
 
 	baseURL := os.Getenv("BASE_URL") 
 	secretKey := os.Getenv("SECRET_KEY")
-	expireInSeconds := int64(300)
+	expireInSeconds := int64(1800)
 
 	if baseURL == "" && secretKey == "" {
 		return "", fmt.Errorf("Missing BASE_URL or SECRET_KEY in env")
@@ -53,7 +53,7 @@ func GenerateConvertSignedURL(filename string) (string, error) {
 
 	baseURL := os.Getenv("BASE_CONVERT_URL") 
 	secretKey := os.Getenv("SECRET_KEY")
-	expireInSeconds := int64(300)
+	expireInSeconds := int64(1800)
 
 	if baseURL == "" && secretKey == "" {
 		return "", fmt.Errorf("Missing BASE_URL or SECRET_KEY in env")

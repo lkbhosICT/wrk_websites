@@ -73,7 +73,7 @@ func ConnectMongo() {
 	
 
 	utils.DropTTLIndex(ImgconvertCollection)
-	utils.CreateTTLIndex(ImgconvertCollection, 1800)
+	utils.CreateTTLIndex(ImgconvertCollection, 86400) // เวลาที่ลบ index
 
 
 	indexModel := mongo.IndexModel{
